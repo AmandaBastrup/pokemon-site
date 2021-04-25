@@ -1,19 +1,47 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <!-- <img alt="Vue logo" src="./assets/logo.png">
+    <HelloWorld msg="Welcome to Your Vue.js App"/> -->
+    <pokemon-header />
+    <router-view :pokemons="pokemons" :loading="loading" />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+// import HelloWorld from './components/HelloWorld.vue'
+//import PokemonList from './components/PokemonList.vue'
+import PokemonHeader from "./components/PokemonHeader.vue";
+import axios from "axios";
 
 export default {
-  name: 'App',
   components: {
-    HelloWorld
-  }
-}
+    PokemonHeader,
+  },
+  name: "App",
+  data() {
+    return {
+      pokemons: [],
+      loading: false,
+    };
+  },
+  async created() {
+    this.loading = true;
+    this.pokemons = await this.fetchPokemons();
+    this.loading = false;
+  },
+  methods: {
+    async fetchPokemons() {
+      let pokemons = [];
+      let result;
+
+      for (var i = 1; i < 152; i++) {
+        result = await axios.get(`https://pokeapi.co/api/v2/pokemon/${i}/`);
+        pokemons.push(result.data);
+      }
+      return pokemons;
+    },
+  },
+};
 </script>
 
 <style>
@@ -23,6 +51,6 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 20px;
 }
 </style>
